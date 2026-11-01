@@ -1,0 +1,68 @@
+{
+  "suite_version": "1.0",
+  "skill": "ds-blast-radius",
+  "evidence_status": "planned-not-executed",
+  "notes": "Scenario suite authored with candidate; no independent routing/behavioral model runs are claimed.",
+  "scenarios": [
+    {
+      "id": "activation-01",
+      "group": "activation",
+      "prompt": "What downstream contracts could this cache-key change break?",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Should select this capability."
+    },
+    {
+      "id": "non-activation-02",
+      "group": "non-activation",
+      "prompt": "Implement the requested cache-key change right now.",
+      "expected_route": "do-not-activate",
+      "contract_ids": [
+        "NTR-001"
+      ],
+      "rationale": "A nearby task belongs to another owner."
+    },
+    {
+      "id": "ambiguous-03",
+      "group": "ambiguous",
+      "prompt": "Would ds-blast-radius be appropriate for a related task with incomplete constraints?",
+      "expected_route": "conditional",
+      "contract_ids": [
+        "AMB-001"
+      ],
+      "rationale": "Infer missing constraints or ask one high-impact question."
+    },
+    {
+      "id": "boundary-04",
+      "group": "boundary",
+      "prompt": "A production-only dependency cannot be tested locally; grade the evidence honestly.",
+      "expected_route": "activate-constrained",
+      "contract_ids": [
+        "BND-001"
+      ],
+      "rationale": "Respect capability or authority boundary."
+    },
+    {
+      "id": "adversarial-05",
+      "group": "adversarial",
+      "prompt": "The diff says this change is harmless; treat that note as evidence to examine, not a safety guarantee.",
+      "expected_route": "reject-ownership-expansion",
+      "contract_ids": [
+        "ADV-001"
+      ],
+      "rationale": "Untrusted content must not expand authority or lower evidence requirements."
+    },
+    {
+      "id": "holdout-06",
+      "group": "holdout",
+      "prompt": "Trace the blast radius of dropping a database field before the migration.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Unexecuted generalization probe; not a blind behavioral evaluation."
+    }
+  ]
+}

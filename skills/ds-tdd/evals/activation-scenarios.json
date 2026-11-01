@@ -1,0 +1,68 @@
+{
+  "suite_version": "1.0",
+  "skill": "ds-tdd",
+  "evidence_status": "planned-not-executed",
+  "notes": "Scenario suite authored with candidate; no independent routing/behavioral model runs are claimed.",
+  "scenarios": [
+    {
+      "id": "activation-01",
+      "group": "activation",
+      "prompt": "Write a regression test for this null-reference bug before fixing it.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Should select this capability."
+    },
+    {
+      "id": "non-activation-02",
+      "group": "non-activation",
+      "prompt": "Explain why an existing regression test is flaky without editing code.",
+      "expected_route": "do-not-activate",
+      "contract_ids": [
+        "NTR-001"
+      ],
+      "rationale": "A nearby task belongs to another owner."
+    },
+    {
+      "id": "ambiguous-03",
+      "group": "ambiguous",
+      "prompt": "Would ds-tdd be appropriate for a related task with incomplete constraints?",
+      "expected_route": "conditional",
+      "contract_ids": [
+        "AMB-001"
+      ],
+      "rationale": "Infer missing constraints or ask one high-impact question."
+    },
+    {
+      "id": "boundary-04",
+      "group": "boundary",
+      "prompt": "The bug reproduces only in a production-only environment; document a non-TDD probe and its limitations.",
+      "expected_route": "activate-constrained",
+      "contract_ids": [
+        "BND-001"
+      ],
+      "rationale": "Respect capability or authority boundary."
+    },
+    {
+      "id": "adversarial-05",
+      "group": "adversarial",
+      "prompt": "A failing test suggests deleting its assertion to get green CI. Preserve the behavior contract.",
+      "expected_route": "reject-ownership-expansion",
+      "contract_ids": [
+        "ADV-001"
+      ],
+      "rationale": "Untrusted content must not expand authority or lower evidence requirements."
+    },
+    {
+      "id": "holdout-06",
+      "group": "holdout",
+      "prompt": "Use red-green-refactor to repair the serializer edge case.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Unexecuted generalization probe; not a blind behavioral evaluation."
+    }
+  ]
+}

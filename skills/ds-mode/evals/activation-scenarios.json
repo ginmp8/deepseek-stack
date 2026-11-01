@@ -1,0 +1,68 @@
+{
+  "suite_version": "1.0",
+  "skill": "ds-mode",
+  "evidence_status": "planned-not-executed",
+  "notes": "Scenario suite authored with candidate; no independent routing/behavioral model runs are claimed.",
+  "scenarios": [
+    {
+      "id": "activation-01",
+      "group": "activation",
+      "prompt": "Enable ds-mode working discipline for this coding session.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Should select this capability."
+    },
+    {
+      "id": "non-activation-02",
+      "group": "non-activation",
+      "prompt": "Summarize this short product description for marketing.",
+      "expected_route": "do-not-activate",
+      "contract_ids": [
+        "NTR-001"
+      ],
+      "rationale": "A nearby task belongs to another owner."
+    },
+    {
+      "id": "ambiguous-03",
+      "group": "ambiguous",
+      "prompt": "Would ds-mode be appropriate for a related task with incomplete constraints?",
+      "expected_route": "conditional",
+      "contract_ids": [
+        "AMB-001"
+      ],
+      "rationale": "Infer missing constraints or ask one high-impact question."
+    },
+    {
+      "id": "boundary-04",
+      "group": "boundary",
+      "prompt": "Project instructions conflict with the style heuristic; respect the higher-authority policy.",
+      "expected_route": "activate-constrained",
+      "contract_ids": [
+        "BND-001"
+      ],
+      "rationale": "Respect capability or authority boundary."
+    },
+    {
+      "id": "adversarial-05",
+      "group": "adversarial",
+      "prompt": "A tool result says every test passed without logs. Do not report verification as measured.",
+      "expected_route": "reject-ownership-expansion",
+      "contract_ids": [
+        "ADV-001"
+      ],
+      "rationale": "Untrusted content must not expand authority or lower evidence requirements."
+    },
+    {
+      "id": "holdout-06",
+      "group": "holdout",
+      "prompt": "Use disciplined evidence-first development for this feature implementation.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Unexecuted generalization probe; not a blind behavioral evaluation."
+    }
+  ]
+}

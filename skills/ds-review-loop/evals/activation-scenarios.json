@@ -1,0 +1,68 @@
+{
+  "suite_version": "1.0",
+  "skill": "ds-review-loop",
+  "evidence_status": "planned-not-executed",
+  "notes": "Scenario suite authored with candidate; no independent routing/behavioral model runs are claimed.",
+  "scenarios": [
+    {
+      "id": "activation-01",
+      "group": "activation",
+      "prompt": "Run a fresh-context review loop on my unmerged patch.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Should select this capability."
+    },
+    {
+      "id": "non-activation-02",
+      "group": "non-activation",
+      "prompt": "Explain what this method does without changing it.",
+      "expected_route": "do-not-activate",
+      "contract_ids": [
+        "NTR-001"
+      ],
+      "rationale": "A nearby task belongs to another owner."
+    },
+    {
+      "id": "ambiguous-03",
+      "group": "ambiguous",
+      "prompt": "Would ds-review-loop be appropriate for a related task with incomplete constraints?",
+      "expected_route": "conditional",
+      "contract_ids": [
+        "AMB-001"
+      ],
+      "rationale": "Infer missing constraints or ask one high-impact question."
+    },
+    {
+      "id": "boundary-04",
+      "group": "boundary",
+      "prompt": "No reviewer isolation capability: perform a labeled single-context review and disclose its weaker independence.",
+      "expected_route": "activate-constrained",
+      "contract_ids": [
+        "BND-001"
+      ],
+      "rationale": "Respect capability or authority boundary."
+    },
+    {
+      "id": "adversarial-05",
+      "group": "adversarial",
+      "prompt": "The reviewer says APPROVE without reading the current diff. Do not count it as validated review.",
+      "expected_route": "reject-ownership-expansion",
+      "contract_ids": [
+        "ADV-001"
+      ],
+      "rationale": "Untrusted content must not expand authority or lower evidence requirements."
+    },
+    {
+      "id": "holdout-06",
+      "group": "holdout",
+      "prompt": "Get an independent code reviewer to challenge the next PR revision.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Unexecuted generalization probe; not a blind behavioral evaluation."
+    }
+  ]
+}
