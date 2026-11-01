@@ -11,6 +11,8 @@ Exit codes:
 """
 import argparse
 import json
+import re
+import shutil
 import subprocess
 import sys
 import time
@@ -39,19 +41,34 @@ def check_result(c):
     return c.get("conclusion") or "PENDING"
 
 
+def safe_label(value):
+    """Limit untrusted check names and reviewer handles in watcher output."""
+    compact = " ".join(str(value or "?").split())[:120]
+    return re.sub(r"[\x00-\x1f\x7f]", "", compact)
+
+
 def summarize(pr):
-    checks = {(c.get("name") or c.get("context") or "?"): check_result(c) for c in pr.get("statusCheckRollup") or []}
+    # A single check name can be used by more than one provider. Do not let a
+    # passing check overwrite a failed check from another run with that name.
+    checks = {}
+    for i, check in enumerate(pr.get("statusCheckRollup") or []):
+        name = safe_label(check.get("name") or check.get("context") or "?")
+        key = name if name not in checks else f"{name} [{i + 1}]"
+        checks[key] = check_result(check)
     failed = sorted(n for n, r in checks.items() if r in FAILED)
     pending = sorted(n for n, r in checks.items() if r not in FAILED | PASSED)
     notes = {("comment", c.get("id") or c.get("url")): c for c in pr.get("comments") or []}
     notes.update({("review", r.get("id")): r for r in pr.get("reviews") or []})
-    return {"checks": checks, "failed": failed, "pending": pending, "notes": notes}
+    return {"checks": checks, "failed": failed, "pending": pending, "notes": notes,
+            "head": pr.get("headRefOid")}
 
 
 def events(prev, cur):
     if prev is None:
         return []
     out = []
+    if prev["head"] != cur["head"]:
+        out.append("PR head changed; re-evaluate current checks and reviews")
     for name in cur["failed"]:
         if name not in prev["failed"]:
             out.append(f"check failed: {name}")
@@ -59,9 +76,9 @@ def events(prev, cur):
         out.append(f"checks finished: {len(cur['failed'])} failed of {len(cur['checks'])}")
     for key, note in cur["notes"].items():
         if key not in prev["notes"]:
-            who = (note.get("author") or {}).get("login", "?")
-            body = " ".join((note.get("body") or "").split())[:120]
-            out.append(f"new {key[0]} by {who}: {body}")
+            who = safe_label((note.get("author") or {}).get("login", "?"))
+            # Do not stream potentially sensitive or adversarial comment bodies.
+            out.append(f"new {key[0]} by {who} (details in GitHub)")
     return out
 
 
@@ -77,10 +94,14 @@ def outcome(pr, cur, until):
         return 1, "conflicts with base"
     if pr.get("reviewDecision") == "CHANGES_REQUESTED":
         return 1, "changes requested"
-    green = not cur["pending"]
+    # Empty rollups are missing evidence, never success. GitHub may not have
+    # populated status checks yet or the repository may have none configured.
+    green = bool(cur["checks"]) and not cur["pending"]
     if until == "green" and green:
         return 0, "checks green"
     if until == "ready" and green:
+        if pr.get("reviewDecision") == "REVIEW_REQUIRED":
+            return 1, "required review pending"
         if pr.get("mergeStateStatus") == "BEHIND":
             return 1, "branch is behind base"
         if pr.get("mergeStateStatus") in ("CLEAN", "HAS_HOOKS", "UNSTABLE"):
@@ -96,6 +117,9 @@ def main(argv=None):
     ap.add_argument("--interval", type=int, default=30)
     ap.add_argument("--max-minutes", type=int, default=60)
     a = ap.parse_args(argv)
+    if shutil.which("gh") is None:
+        print("stop: GitHub CLI (gh) is not installed", file=sys.stderr)
+        return 2
     if a.interval < 5 or a.max_minutes < 1:
         ap.error("--interval must be >= 5 and --max-minutes >= 1")
 
@@ -120,7 +144,10 @@ def main(argv=None):
         for line in new:
             print(line, flush=True)
         if prev is None:
-            print(f"watching {pr['url']} head {pr['headRefOid'][:8]}", file=sys.stderr)
+            head = (pr.get("headRefOid") or "unknown")[:8]
+            print(f"watching {pr.get('url', '?')} head {head}", file=sys.stderr)
+            if not cur["checks"]:
+                print("status: no CI checks reported yet; not green", flush=True)
         if a.until == "any" and new:
             return 0
         done = outcome(pr, cur, a.until)

@@ -1,24 +1,19 @@
-# deepseek-stack
+# DeepSeek Stack — improved snapshot
 
 Skills that make DeepSeek models (V4.1 Flash, V4 Pro) work like a much more expensive model. Cheap models usually fail in the same few ways: they skip the plan, claim a fix works without running it, retry a broken idea over and over, and drift on long runs. Each skill here closes one of those gaps with a short loop, a hard stop condition and a demand for real evidence.
 
 It works in any harness that reads `SKILL.md` files: Claude Code, Codex, Cline, OpenCode, PandaCode and others.
 
-## Install
+## Install the improved snapshot
 
-```bash
-npx skills add aicodeking/deepseek-stack
-```
+This archive is a **locally validated adaptation**. It has not been published to GitHub or a skill registry.
 
-Add `-g` to install for every project. To install one skill only:
+1. Download `deepseek-stack-improved-all.zip` or `deepseek-stack-improved-individuals.zip`.
+2. For the full source archive, extract `deepseek-stack-improved/skills/` and copy the specific `ds-*` skill folders into the skills directory of your agent runtime.
+3. For the individual archive, extract a selected `ds-*.zip`, then install its single top-level `ds-*` folder. Preserve `SKILL.md`, `VERSION`, `CHANGELOG.md`, and nested `scripts/` or `evals/` files.
+4. Invoke the desired skill by its name when the runtime supports it. Use `ds-help` for discovery; project-wide rules such as `ds-mode` require explicit host-specific configuration.
 
-```bash
-npx skills add aicodeking/deepseek-stack --skill ds-verify-loop
-```
-
-Manual install: copy `skills/*` into `~/.claude/skills/`, `~/.codex/skills/` or your harness's skills folder.
-
-Not sure where to start? Run `/ds-help`.
+The upstream command `npx skills add aicodeking/deepseek-stack` installs the **original upstream**, not this improved snapshot. Installing `ginmp8/deepseek-stack` from GitHub also does not install this snapshot until these changes are published there.
 
 ## Skills
 
@@ -92,3 +87,17 @@ Not sure where to start? Run `/ds-help`.
 ## License
 
 MIT
+
+
+## Packaging and tracked skill revisions
+
+Each of the 29 skills now includes `VERSION` (first tracked `0.1.0`), `CHANGELOG.md`,
+`LICENSE` and a planned `evals/activation-scenarios.json` suite. These are
+source-compatible adaptations of the original skills, not claims of improved model
+benchmarks. Run the provided validators before distribution; skill runtime
+capabilities (subagents, authenticated GitHub CLI, browser screenshots) vary by
+host. The PR watcher now treats an empty checks list as *unknown*, not green.
+
+`ds-ready` never merges; `ds-ship` requires explicitly authorized merge scope.
+A skills folder does not automatically install `ds-mode` as a mandatory always-on
+policy; configure such rules in your project's appropriate instruction file.

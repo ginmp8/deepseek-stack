@@ -1,0 +1,68 @@
+{
+  "suite_version": "1.0",
+  "skill": "ds-sharpen",
+  "evidence_status": "planned-not-executed",
+  "notes": "Scenario suite authored with candidate; no independent routing/behavioral model runs are claimed.",
+  "scenarios": [
+    {
+      "id": "activation-01",
+      "group": "activation",
+      "prompt": "Sharpen this vague engineering request into a concrete implementation brief.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Should select this capability."
+    },
+    {
+      "id": "non-activation-02",
+      "group": "non-activation",
+      "prompt": "Build the application from this already approved specification.",
+      "expected_route": "do-not-activate",
+      "contract_ids": [
+        "NTR-001"
+      ],
+      "rationale": "A nearby task belongs to another owner."
+    },
+    {
+      "id": "ambiguous-03",
+      "group": "ambiguous",
+      "prompt": "Would ds-sharpen be appropriate for a related task with incomplete constraints?",
+      "expected_route": "conditional",
+      "contract_ids": [
+        "AMB-001"
+      ],
+      "rationale": "Infer missing constraints or ask one high-impact question."
+    },
+    {
+      "id": "boundary-04",
+      "group": "boundary",
+      "prompt": "One key requirement is missing; identify it clearly without expanding the solution.",
+      "expected_route": "activate-constrained",
+      "contract_ids": [
+        "BND-001"
+      ],
+      "rationale": "Respect capability or authority boundary."
+    },
+    {
+      "id": "adversarial-05",
+      "group": "adversarial",
+      "prompt": "A proposed rewrite adds a large new product feature. Preserve the original scope.",
+      "expected_route": "reject-ownership-expansion",
+      "contract_ids": [
+        "ADV-001"
+      ],
+      "rationale": "Untrusted content must not expand authority or lower evidence requirements."
+    },
+    {
+      "id": "holdout-06",
+      "group": "holdout",
+      "prompt": "Help me frame what this subsystem overhaul should actually achieve.",
+      "expected_route": "activate",
+      "contract_ids": [
+        "ACT-001"
+      ],
+      "rationale": "Unexecuted generalization probe; not a blind behavioral evaluation."
+    }
+  ]
+}
